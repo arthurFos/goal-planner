@@ -18,6 +18,7 @@ import fkal.goalplanner.goalplanner.service.GoalService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping(value = "/goal")
@@ -38,14 +39,14 @@ public class GoalController {
 	@GetMapping(value = "/{id}")
 	@ApiOperation(value = "Returns goal by its id")
 	public ResponseEntity<GoalDto> getOneGoal(
-			@ApiParam(value = "The id of the goal to return") @PathVariable(name = "id") String goalId) {
+			@ApiParam(value = "The id of the goal to return") @PathVariable(name = "id") String goalId) throws NotFoundException {
 	
 		return ResponseEntity.ok(goalService.getGoalById(goalId));
 	}
 	
 	@GetMapping(value = "/{customer_id}/customers")
 	@ApiOperation(value = "Returns all goal of a customer")
-	public ResponseEntity<GoalDto> getGoalByCustomer(
+	public ResponseEntity<List<GoalDto>> getGoalByCustomer(
 			@ApiParam(value = "The Customerid to return its goals", required = true) @PathVariable(value = "customer_id") String customerId) {
 
 		return ResponseEntity.ok(goalService.getGoalByCustomerId(customerId));
@@ -53,7 +54,7 @@ public class GoalController {
 	
 	@GetMapping(value =  "/{category_id}/category")
 	@ApiOperation(value = "Return all goals of a category")
-	public ResponseEntity<CategoryDto> getGoalByCategory(
+	public ResponseEntity<List<GoalDto>> getGoalByCategory(
 			@ApiParam(value = "The id of the category to returning the goals", required = true) @PathVariable (name = "category_id") String categoryId) {
 
 		return ResponseEntity.ok(goalService.getGoalByCategoryId(categoryId));
@@ -62,7 +63,7 @@ public class GoalController {
 	@PostMapping
 	@ApiOperation(value = "Create a new goal")
 	public ResponseEntity<GoalDto> createGoal(
-			@ApiParam(value = "The goal to be created", required = true) @RequestBody GoalDto goalDto) {
+			@ApiParam(value = "The goal to be created", required = true) @RequestBody GoalDto goalDto) throws Exception {
 
 		return ResponseEntity.ok(goalService.createGoal(goalDto));
 	}
@@ -71,7 +72,7 @@ public class GoalController {
 	@ApiOperation(value = "Updated an existing goal")
 	public ResponseEntity<GoalDto> updateGoal(
 			@ApiParam(value = "The id of the goal to update") @PathVariable (name = "id") String goalId,
-			@ApiParam(value = "The goal to update", required = true) @RequestBody GoalDto goalDto) {
+			@ApiParam(value = "The goal to update", required = true) @RequestBody GoalDto goalDto) throws NotFoundException {
 
 		return ResponseEntity.ok(goalService.updateGoal(goalId, goalDto));
 	}

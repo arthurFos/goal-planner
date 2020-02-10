@@ -17,7 +17,8 @@ import lombok.Data;
 public class GoalBo {
 
 	@Id
-	private String id;
+	@Column(name = "id")
+	private String goalId;
 	
 	private String name;
 	
@@ -33,11 +34,11 @@ public class GoalBo {
 	private LocalDateTime endAt;
 	
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "categoryId")
 	private CategoryBo categoryBo;
 	
 	@ManyToOne
-	@JoinColumn(name = "customer_id")
+	@JoinColumn(name = "customerId")
 	private CustomerBo customerBo;
 	
 }
