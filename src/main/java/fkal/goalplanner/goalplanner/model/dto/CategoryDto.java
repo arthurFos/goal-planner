@@ -21,5 +21,5 @@ public class CategoryDto {
 	private String description;
 	
 	@ApiParam(value = "Goals of a category")
-	private List<GoalBo> goalBos;
+	private List<GoalDto> goalDtos;
 }

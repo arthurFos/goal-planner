@@ -13,6 +13,7 @@ import fkal.goalplanner.goalplanner.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping(value = "/category")
@@ -33,7 +34,7 @@ public class CategoryController {
 	@GetMapping(value = "/{id}")
 	@ApiOperation(value = "Returns one category by its id")
 	public ResponseEntity<CategoryDto> getCategoryById(
-			@ApiParam(value = "Id of the category to return", required = true) @PathVariable(name = "id") String categoryId) {
+			@ApiParam(value = "Id of the category to return", required = true) @PathVariable(name = "id") String categoryId) throws NotFoundException {
 	
 		return ResponseEntity.ok(categoryService.getOneCategory(categoryId));
 	}
