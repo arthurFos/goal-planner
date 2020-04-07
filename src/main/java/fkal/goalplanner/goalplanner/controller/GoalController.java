@@ -1,18 +1,5 @@
 package fkal.goalplanner.goalplanner.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import fkal.goalplanner.goalplanner.model.dto.CategoryDto;
 import fkal.goalplanner.goalplanner.model.dto.GoalDto;
 import fkal.goalplanner.goalplanner.service.GoalService;
 import io.swagger.annotations.Api;
@@ -20,70 +7,74 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping(value = "/goal")
-@RestController
+import java.util.List;
+
+@RestController("/goals")
 @RequiredArgsConstructor
-@Api(tags = "GoalController", value = "goal")
+@Api(tags = "GoalController", value = "goals")
+@CrossOrigin
 public class GoalController {
 
-	private final GoalService goalService;
-	
-	@GetMapping
-	@ApiOperation(value = "Returns all goals (filter)")
-	public ResponseEntity<List<GoalDto>> getGoals() {
-		
-		return ResponseEntity.ok(goalService.getAllGoals());
-	}
-	
-	@GetMapping(value = "/{id}")
-	@ApiOperation(value = "Returns goal by its id")
-	public ResponseEntity<GoalDto> getOneGoal(
-			@ApiParam(value = "The id of the goal to return") @PathVariable(name = "id") String goalId) throws NotFoundException {
-	
-		return ResponseEntity.ok(goalService.getGoalById(goalId));
-	}
-	
-	@GetMapping(value = "/{customer_id}/customers")
-	@ApiOperation(value = "Returns all goal of a customer")
-	public ResponseEntity<List<GoalDto>> getGoalByCustomer(
-			@ApiParam(value = "The Customerid to return its goals", required = true) @PathVariable(value = "customer_id") String customerId) {
+    private final GoalService goalService;
 
-		return ResponseEntity.ok(goalService.getGoalByCustomerId(customerId));
-	}
-	
-	@GetMapping(value =  "/{category_id}/category")
-	@ApiOperation(value = "Return all goals of a category")
-	public ResponseEntity<List<GoalDto>> getGoalByCategory(
-			@ApiParam(value = "The id of the category to returning the goals", required = true) @PathVariable (name = "category_id") String categoryId) {
+    @GetMapping
+    @ApiOperation("Returns all goals (filter)")
+    public ResponseEntity<List<GoalDto>> getGoals() {
 
-		return ResponseEntity.ok(goalService.getGoalByCategoryId(categoryId));
-	}
-	
-	@PostMapping
-	@ApiOperation(value = "Create a new goal")
-	public ResponseEntity<GoalDto> createGoal(
-			@ApiParam(value = "The goal to be created", required = true) @RequestBody GoalDto goalDto) throws Exception {
+        return ResponseEntity.ok(goalService.fetchAllGoals());
+    }
 
-		return ResponseEntity.ok(goalService.createGoal(goalDto));
-	}
+    @GetMapping("/{id}")
+    @ApiOperation("Returns a goal by its id")
+    public ResponseEntity<GoalDto> getOneGoal(
+            @ApiParam("goalId") @PathVariable("id") String goalId) throws NotFoundException {
 
-	@PutMapping(value = "/{id}")
-	@ApiOperation(value = "Updated an existing goal")
-	public ResponseEntity<GoalDto> updateGoal(
-			@ApiParam(value = "The id of the goal to update") @PathVariable (name = "id") String goalId,
-			@ApiParam(value = "The goal to update", required = true) @RequestBody GoalDto goalDto) throws NotFoundException {
+        return ResponseEntity.ok(goalService.fetchOneGoal(goalId));
+    }
 
-		return ResponseEntity.ok(goalService.updateGoal(goalId, goalDto));
-	}
-	
-	@DeleteMapping(value = "/{id}")
-	@ApiOperation(value = "Delete a goal")
-	public ResponseEntity<Void> deleteGoal(
-			@ApiParam(value = "The id of the goal to delete", required = true) @PathVariable (name = "id") String goalId) {
+    @GetMapping("/users/{id}")
+    @ApiOperation("Returns all goals of a user")
+    public ResponseEntity<List<GoalDto>> getGoalsByUser(
+            @ApiParam(value = "userId", required = true) @PathVariable("id") String userId) {
 
-		goalService.deleteGoal(goalId);
-		
-		return ResponseEntity.ok().build();
-	}
+        return ResponseEntity.ok(goalService.fetchAllGoalsForUser(userId));
+    }
+
+    @GetMapping("/categories/{id}")
+    @ApiOperation("Return all goals of a category")
+    public ResponseEntity<List<GoalDto>> getGoalsByCategory(
+            @ApiParam(value = "categoryId", required = true) @PathVariable("id") String categoryId) {
+
+        return ResponseEntity.ok(goalService.fetchGoalsForCategory(categoryId));
+    }
+
+    @PostMapping
+    @ApiOperation("Create a new goal")
+    public ResponseEntity<GoalDto> createGoal(
+            @ApiParam(value = "GoalDto", required = true) @RequestBody GoalDto goalDto) {
+
+        return ResponseEntity.ok(goalService.createGoal(goalDto));
+    }
+
+    @PutMapping("/{id}")
+    @ApiOperation("Updated an existing goal")
+    public ResponseEntity<GoalDto> updateGoal(
+            @ApiParam("goalId") @PathVariable("id") String goalId,
+            @ApiParam(value = "GoalDto", required = true) @RequestBody GoalDto goalDto) throws NotFoundException {
+
+        return ResponseEntity.ok(goalService.updateGoal(goalId, goalDto));
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("Delete a goal")
+    public ResponseEntity<Void> deleteGoal(
+            @ApiParam(value = "goalId", required = true) @PathVariable("id") String goalId) {
+
+        goalService.deleteGoal(goalId);
+
+        return ResponseEntity.ok().build();
+    }
 }
