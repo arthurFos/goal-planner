@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/goals")
+@RequestMapping("/goals")
+@RestController
 @RequiredArgsConstructor
 @Api(tags = "GoalController", value = "goals")
 @CrossOrigin
